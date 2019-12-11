@@ -60,13 +60,19 @@ height(bin(L, _, R), N) :- N #> 0, height(L, X), height(R, Y), (X =< Y -> N is Y
 % false.
 
 bst(tip).
-bst(bin(tip, X, tip)).
-bst(bin(L, X, tip)) :- bst(L), grabData(L, LX), LX #=< X.
-bst(bin(tip, X, R)) :- bst(R), grabData(R, RX), X #=< RX.
-bst(bin(L, X, R)) :- bst(L), bst(R), grabData(L, LX), LX #=< X, grabData(R, RX), X #=< RX.
+bst(bin(tip, _, tip)).
+bst(bin(L, X, R)) :- bst(L), bst(R), grabData(L, LX), LX #=< X, grabData(R, RX), X #=< RX, min(R, MinR), X #=< MinR, max(L, MaxL), MaxL #=< X.
 
-grabData(tip, X) :- false.
-grabData(bin(L, X, R), X).
+grabData(tip, _).
+grabData(bin(_, X, _), X).
+
+max(tip, _).
+max(bin(_, X, tip), X).
+max(bin(_, X, R), M) :- X #=< M, max(R, M).
+
+min(tip, _).
+min(bin(tip, X, _), X).
+min(bin(L, X, _), M) :- M #=< X, min(L, M).
 
 % Part II: Lists
 % --------------
